@@ -2,6 +2,10 @@
 # Change Log
 All essential changes on EntraOps will be documented in this changelog.
 
+## [0.4.1] - 2025-09-16
+### Fixed
+- Improvement in processing WatchList uploads and updates
+
 ## [0.4] - 2025-05-30
 ### Added
 - Support for Role Management Provider "Defender" (Unified RBAC for Microsoft Defender XDR)

@@ -123,47 +123,46 @@ function Save-EntraOpsPrivilegedEAMWatchLists {
                     $NewRoleAssignmentsWatchlistItems.Add( $RoleAssignment ) | Out-Null
                 }
             }
-            $WatchListName = "$($WatchListPrefix)Principals"
-            Write-Output "Write information to watchlist: $WatchListName"
-            if ( $null -ne $NewPrincipalsWatchlistItems ) {
-
-                $WatchListPath = Join-Path $PWD "$($WatchListName).csv"
-                $NewPrincipalsWatchlistItems | Export-Csv -Path $WatchListPath -NoTypeInformation -Encoding utf8 -Delimiter ","
-                $Parameters = @{
-                    WatchListFilePath        = $WatchListPath
-                    DisplayName              = $WatchListName
-                    itemsSearchKey           = "UniqueId"
-                    SubscriptionId           = $SentinelSubscriptionId
-                    ResourceGroupName        = $SentinelResourceGroupName
-                    WorkspaceName            = $SentinelWorkspaceName
-                    DefaultDuration          = "P14D"
-                    ReplaceExistingWatchlist = $true
-                }
-                New-GkSeAzSentinelWatchlist @Parameters
-                Remove-Item -Path $WatchListPath -Force
-            }
-
-            $WatchListName = "$($WatchListPrefix)RoleAssignments"
-            Write-Output "Write information to watchlist: $WatchListName"
-
-            if ( ![string]::IsNullOrEmpty($NewRoleAssignmentsWatchlistItems) ) {
-
-                $WatchListPath = Join-Path $PWD "$($WatchListName).csv"
-                $NewRoleAssignmentsWatchlistItems | Export-Csv -Path $WatchListPath -NoTypeInformation -Encoding utf8 -Delimiter ","
-                $Parameters = @{
-                    WatchListFilePath        = $WatchListPath
-                    DisplayName              = $WatchListName
-                    itemsSearchKey           = "UniqueId"
-                    SubscriptionId           = $SentinelSubscriptionId
-                    ResourceGroupName        = $SentinelResourceGroupName
-                    WorkspaceName            = $SentinelWorkspaceName
-                    DefaultDuration          = "P14D"
-                    ReplaceExistingWatchlist = $true
-                }
-                New-GkSeAzSentinelWatchlist @Parameters
-                Remove-Item -Path $WatchListPath -Force
-            }
         }
+    }
+
+    if ( $null -ne $NewPrincipalsWatchlistItems ) {
+        $WatchListName = "$($WatchListPrefix)Principals"
+        Write-Output "Write information to watchlist: $WatchListName"
+
+        $WatchListPath = Join-Path $PWD "$($WatchListName).csv"
+        $NewPrincipalsWatchlistItems | Export-Csv -Path $WatchListPath -NoTypeInformation -Encoding utf8 -Delimiter ","
+        $Parameters = @{
+            WatchListFilePath        = $WatchListPath
+            DisplayName              = $WatchListName
+            itemsSearchKey           = "UniqueId"
+            SubscriptionId           = $SentinelSubscriptionId
+            ResourceGroupName        = $SentinelResourceGroupName
+            WorkspaceName            = $SentinelWorkspaceName
+            DefaultDuration          = "P14D"
+            ReplaceExistingWatchlist = $true
+        }
+        New-GkSeAzSentinelWatchlist @Parameters -Verbose
+        Remove-Item -Path $WatchListPath -Force
+    }
+
+    if ( ![string]::IsNullOrEmpty($NewRoleAssignmentsWatchlistItems) ) {
+        $WatchListName = "$($WatchListPrefix)RoleAssignments"
+        Write-Output "Write information to watchlist: $WatchListName"
+        $WatchListPath = Join-Path $PWD "$($WatchListName).csv"
+        $NewRoleAssignmentsWatchlistItems | Export-Csv -Path $WatchListPath -NoTypeInformation -Encoding utf8 -Delimiter ","
+        $Parameters = @{
+            WatchListFilePath        = $WatchListPath
+            DisplayName              = $WatchListName
+            itemsSearchKey           = "UniqueId"
+            SubscriptionId           = $SentinelSubscriptionId
+            ResourceGroupName        = $SentinelResourceGroupName
+            WorkspaceName            = $SentinelWorkspaceName
+            DefaultDuration          = "P14D"
+            ReplaceExistingWatchlist = $true
+        }
+        New-GkSeAzSentinelWatchlist @Parameters -Verbose
+        Remove-Item -Path $WatchListPath -Force
     }
 
     if ($WatchListTemplates -notcontains "None") {
