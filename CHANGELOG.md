@@ -1,7 +1,7 @@
 # Change Log
 All essential changes on EntraOps will be documented in this changelog.
 
-## [0.7.0] - 2026-03-25
+## [0.7.0] - 2026-05-06
 ### Added
 - **Tenant Governance Relationship support**: `Get-EntraOpsPrivilegedEntraIdRoles` now fetches active governance relationships from `/beta/directory/tenantGovernance/governanceRelationships` and processes delegated admin role assignments (`policySnapshot.delegatedAdministrationRoleAssignments`) from managing tenants (Tenant Governance Relationship).
 - **Cross-tenant object resolution**: New private function `Invoke-EntraOpsCrossTenantObjectResolution` implements a two-phase resolution strategy — Phase 1 resolves objects in the home tenant, Phase 2 switches context to the managing tenant to resolve objects that returned `unknown` type
@@ -36,7 +36,8 @@ All essential changes on EntraOps will be documented in this changelog.
 - Capabilities to classify by "AssignedDeviceObjects" (optional parameter: ApplyClassificationByAssignedObjects), use `Update-EntraOpsClassificationControlPlaneScope` to identify scope of devices by Control and Management Plane users
 
 ### Fixed
-- Fixed a bug in `Update-EntraOpsPrivilegedAdministrativeUnit` where role-assignable groups and PIM for Groups enabled groups could be added to Restricted Management Administrative Units (RMAU), which is not supported
+- Bug fix in `Get-EntraOpsPrivilegedEntraObject` for `agentIdentity` and `agentIdentityBlueprintPrincipal` with normalization to `servicePrincipal`, added null/empty guards for `ObjectType` and `ObjectSubType`
+- Bug fix in `Update-EntraOpsPrivilegedAdministrativeUnit` where role-assignable groups and PIM for Groups enabled groups could be added to Restricted Management Administrative Units (RMAU), which is not supported
 
 ### Known issues
 - In multi-tenant environments using user interactive mode, EntraOps may prompt for sign-in multiple times during execution.

@@ -215,6 +215,11 @@ function Get-EntraOpsPrivilegedEntraObject {
     Write-Verbose "[Performance] AAD Role protection check: $($StopwatchRegion.ElapsedMilliseconds)ms"
     #endregion
 
+    # agentIdentityBlueprintPrincipal and agentIdentity are SP subtypes; normalize so the SP branch handles them
+    if ($ObjectDetails.'@odata.type' -like '#microsoft.graph.agentIdentity*') {
+        Add-Member -InputObject $ObjectDetails -NotePropertyName '@odata.type' -NotePropertyValue '#microsoft.graph.servicePrincipal' -Force
+    }
+
     switch ( $ObjectDetails.'@odata.type' ) {
         #region User object details
         '#microsoft.graph.user' {
@@ -385,6 +390,8 @@ function Get-EntraOpsPrivilegedEntraObject {
                     $IdentityParent = $AgentIdentityBlueprintPrincipalObject.appId
                 } else {
                     $AgentIdentityBlueprintPrincipalObject = $SPObject
+                    $ObjectType = 'servicePrincipal'
+                    $ObjectSubType = 'agentIdentityBlueprintPrincipal'
                 }
 
                 $OutsideOfAadTenant = ($AgentIdentityBlueprintPrincipalObject.AppOwnerOrganizationId -ne $TenantId)
@@ -520,6 +527,13 @@ function Get-EntraOpsPrivilegedEntraObject {
     if ($null -ne $ObjectDetails) {
         $StopwatchTotal.Stop()
         Write-Verbose "[Performance] Total execution time: $($StopwatchTotal.ElapsedMilliseconds)ms"
+
+        if ([string]::IsNullOrEmpty($ObjectSubType)) {
+            $ObjectSubType = "Unknown"
+        }
+        if ([string]::IsNullOrEmpty($ObjectType)) {
+            $ObjectType = "Unknown"
+        }
         
         [PSCustomObject]@{
             'ObjectId'                      = $ObjectDetails.Id
